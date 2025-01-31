@@ -1,5 +1,11 @@
 <t>
-    <t t-set="set_master_pwd" t-value="set_master_pwd or False" />
+    <!--<t t-set="set_master_pwd" t-value="set_master_pwd or False" />-->
+    <t t-if="set_master_pwd">
+        <t t-set="set_master_pwd" t-value="set_master_pwd" />
+    </t>
+    <t t-elif="">
+        <t t-set="set_master_pwd" t-value="False" />
+    </t>
     <t t-set="input_class" t-value="'form-control'" />
 
     <t t-if="insecure">
@@ -15,7 +21,7 @@
             <t t-set="input_class" t-value="'form-control generated_master_pwd_input'" />
         </t>
     </t>
-    <t t-if="not insecure or not set_master_pwd">
+    <!--<t t-if="not insecure or not set_master_pwd">-->
         <div class="row mb-3">
             <label for="master_pwd" class="col-md-4 col-form-label">Master Password</label>
             <div class="col-md-8">
@@ -30,5 +36,5 @@
                 </div>
             </div>
         </div>
-    </t>
+    <!--</t>-->
 </t>

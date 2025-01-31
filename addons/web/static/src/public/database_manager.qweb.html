@@ -31,56 +31,66 @@
         <div class="row">
             <div class="col-lg-6 offset-lg-3 o_database_list">
                 <img src="/web/static/img/logo2.png" class="img-fluid d-block mx-auto"/>
-                <t t-if="not list_db">
+                <!--<t t-if="not list_db">-->
+                <t t-if="list_db">
+                </t>
+                <t t-elif="">
                     <div class="alert alert-danger text-center">The database manager has been disabled by the administrator</div>
                 </t>
-                <t t-elif="insecure and databases">
-                    <div class="alert alert-warning">
-                        Warning, your Odoo database manager is not protected.<br/>
-                        Please <a href="#" data-bs-toggle="modal" data-bs-target=".o_database_master">set a master password</a> to secure it.
-                    </div>
+                <t t-elif="insecure">
+                    <t t-if="databases">
+                        <div class="alert alert-warning">
+                            Warning, your Odoo database manager is not protected.<br/>
+                            Please <a href="#" data-bs-toggle="modal" data-bs-target=".o_database_master">set a master password</a> to secure it.
+                        </div>
+                    </t>
+                    <t t-else="">
+                    </t>
                 </t>
                 <t t-if="error">
                     <div class="alert alert-danger" t-out="error"></div>
                 </t>
-                <t t-if="list_db and databases">
-                    <div class="list-group">
+                <!--<t t-if="list_db and databases">-->
+                <t t-if="list_db">
+                    <t t-if="databases">
+                        <div class="list-group">
 
-                        <t t-foreach="databases" t-as="db">
-                            <div class="list-group-item d-flex align-items-center">
-                                <a t-attf-href="/odoo?db={{ db }}" class="d-block flex-grow-1">
-                                    <t t-if="db in incompatible_databases">
-                                        <i class="icon fa fa-warning float-end text-warning" title="This database may not be compatible"></i>
+                            <t t-foreach="databases" t-as="db">
+                                <div class="list-group-item d-flex align-items-center">
+                                    <a t-attf-href="/odoo?db={{ db }}" class="d-block flex-grow-1">
+                                        <t t-if="db in incompatible_databases">
+                                            <i class="icon fa fa-warning float-end text-warning" title="This database may not be compatible"></i>
+                                        </t>
+                                        <t t-out="db" />
+                                    </a>
+                                    <t t-if="manage">
+                                        <div class="btn-group btn-group-sm float-end">
+                                            <button type="button" t-att-data-db="db" data-bs-target=".o_database_backup" class="o_database_action btn btn-primary">
+                                                <i class="fa fa-floppy-o fa-fw"></i> Backup
+                                            </button>
+                                            <button type="button" t-att-data-db="db" data-bs-target=".o_database_duplicate" class="o_database_action btn btn-secondary">
+                                                <i class="fa fa-files-o fa-fw"></i> Duplicate
+                                            </button>
+                                            <button type="button" t-att-data-db="db" data-bs-target=".o_database_delete" class="o_database_action btn btn-danger">
+                                                <i class="fa fa-trash-o fa-fw"></i> Delete
+                                            </button>
+                                        </div>
                                     </t>
-                                    <t t-out="db" />
-                                </a>
-                                <t t-if="manage">
-                                    <div class="btn-group btn-group-sm float-end">
-                                        <button type="button" t-att-data-db="db" data-bs-target=".o_database_backup" class="o_database_action btn btn-primary">
-                                            <i class="fa fa-floppy-o fa-fw"></i> Backup
-                                        </button>
-                                        <button type="button" t-att-data-db="db" data-bs-target=".o_database_duplicate" class="o_database_action btn btn-secondary">
-                                            <i class="fa fa-files-o fa-fw"></i> Duplicate
-                                        </button>
-                                        <button type="button" t-att-data-db="db" data-bs-target=".o_database_delete" class="o_database_action btn btn-danger">
-                                            <i class="fa fa-trash-o fa-fw"></i> Delete
-                                        </button>
-                                    </div>
-                                </t>
+                                </div>
+                            </t>
+                        </div>
+                        <t t-if="manage">
+                            <div class="d-flex mt-2">
+                                <button type="button" data-bs-toggle="modal" data-bs-target=".o_database_create" class="btn btn-primary flex-grow-1">Create Database</button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target=".o_database_restore" class="btn btn-primary flex-grow-1 ms-2">Restore Database</button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target=".o_database_master" class="btn btn-primary flex-grow-1 ms-2">Set Master Password</button>
                             </div>
                         </t>
-                    </div>
-                    <t t-if="manage">
-                        <div class="d-flex mt-2">
-                            <button type="button" data-bs-toggle="modal" data-bs-target=".o_database_create" class="btn btn-primary flex-grow-1">Create Database</button>
-                            <button type="button" data-bs-toggle="modal" data-bs-target=".o_database_restore" class="btn btn-primary flex-grow-1 ms-2">Restore Database</button>
-                            <button type="button" data-bs-toggle="modal" data-bs-target=".o_database_master" class="btn btn-primary flex-grow-1 ms-2">Set Master Password</button>
-                        </div>
-                    </t>
-                    <t t-else="">
-                        <div class="text-center mt-2">
-                            <a href="/web/database/manager">Manage databases</a>
-                        </div>
+                        <t t-else="">
+                            <div class="text-center mt-2">
+                                <a href="/web/database/manager">Manage databases</a>
+                            </div>
+                        </t>
                     </t>
                 </t>
                 <t t-elif="list_db">

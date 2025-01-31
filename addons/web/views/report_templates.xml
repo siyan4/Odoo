@@ -844,10 +844,14 @@
     <template id="styles_company_report">
         <t t-foreach="company_ids" t-as="company" t-translation="off">
             <t t-set="forced_vat" t-value="False"/>
-            <t t-set="font" t-value="company.font or 'Lato'" />
-            <t t-set="primary" t-value="company.primary_color or '#212529'" />
-            <t t-set="secondary" t-value="company.secondary_color or '#212529'" />
-            <t t-set="layout" t-value="company.external_report_layout_id.key or 'web.external_layout_standard'" />
+            <!--<t t-set="font" t-value="company.font or 'Lato'" />-->
+            <t t-set="font" t-value="str(bool(company.font)).replace('True', str(company.font)).replace('False', 'Lato')" />
+            <!--<t t-set="primary" t-value="company.primary_color or '#212529'" />-->
+            <t t-set="primary" t-value="str(bool(company.primary_color)).replace('True', str(company.primary_color)).replace('False', '#212529')" />
+            <!--<t t-set="secondary" t-value="company.secondary_color or '#212529'" />-->
+            <t t-set="secondary" t-value="str(bool(company.secondary_color)).replace('True', str(company.secondary_color)).replace('False', '#212529')" />
+            <!--<t t-set="layout" t-value="company.external_report_layout_id.key or 'web.external_layout_standard'" />-->
+            <t t-set="layout" t-value="str(bool(company.external_report_layout_id.key)).replace('True', str(company.external_report_layout_id.key)).replace('False', 'web.external_layout_standard')" />
                 // Simplified color-contrast function to replicate bootstrap in report preview.
                 @function preview-color-contrast($background) {
                     @if (lightness($background) > 50) {

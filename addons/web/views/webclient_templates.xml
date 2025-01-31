@@ -3,7 +3,8 @@
 
     <!-- Call this template instead of "web.assets_tests" to have the proper conditional check -->
     <template id="conditional_assets_tests" name="Tests Assets Bundle">
-        <t t-if="'tests' in debug or test_mode_enabled">
+        <!--<t t-if="'tests' in debug or test_mode_enabled">-->
+        <t t-if="test_mode_enabled">
             <t t-if="ignore_missing_deps">
                 <!-- FIXME: This is only to ignore the errors for the lazy loading. To allow all tests assets and tours to be in the same bundle, the assets_tests bundle ignores missing dependencies -->
                 <t t-call-assets="web.__assets_tests_call__" defer_load="True" />
@@ -15,19 +16,23 @@
     </template>
 
     <template id="web.layout" name="Web layout">&lt;!DOCTYPE html&gt;
-<html t-att="html_data or {}">
+<!--<html t-att="html_data or {}">-->
+<html t-att="html_data">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <title t-esc="title or 'Odoo'"/>
-        <link type="image/x-icon" rel="shortcut icon" t-att-href="x_icon or '/web/static/img/favicon.ico'"/>
+        <!--<title t-esc="title or 'Odoo'"/>-->
+        <title t-esc="str(bool(title)).replace('True', str(title)).replace('False', 'Odoo')"/>
+        <!--<link type="image/x-icon" rel="shortcut icon" t-att-href="x_icon or '/web/static/img/favicon.ico'"/>-->
+        <link type="image/x-icon" rel="shortcut icon" t-att-href="str(bool(x_icon)).replace('True', str(x_icon)).replace('False', '/web/static/img/favicon.ico')"/>
         <script id="web.layout.odooscript" type="text/javascript">
             var odoo = {
                 csrf_token: "<t t-nocache="The csrf token must always be up to date." t-esc="request.csrf_token(None)"/>",
                 debug: "<t t-esc="debug"/>",
             };
         </script>
-        <t t-out="head or ''"/>
+        <!--<t t-out="head or ''"/>-->
+        <t t-out="head"/>
     </head>
     <body t-att-class="body_classname">
         <t t-out="0"/>
@@ -58,8 +63,10 @@
         <t t-call-assets="web.assets_frontend_lazy" t-css="false" lazy_load="True"/>
       </xpath>
         <xpath expr="//t[@t-out='0']" position="replace">
-            <div id="wrapwrap" t-attf-class="#{pageName or ''}">
-                <header t-if="not no_header" id="top" data-anchor="true">
+            <!--<div id="wrapwrap" t-attf-class="#{pageName or ''}">-->
+            <div id="wrapwrap" t-attf-class="#{str(bool(pageName)).replace('True', str(pageName)).replace('False', '')}">
+                <!--<header t-if="not no_header" id="top" data-anchor="true">-->
+                <header t-if="bool(no_header) == False" id="top" data-anchor="true">
                     <img class="img-responsive d-block mx-auto"
                         t-attf-src="/web/binary/company_logo"
                         alt="Logo"/>
@@ -67,9 +74,11 @@
                 <main>
                     <t t-out="0"/>
                 </main>
-                <footer t-cache="no_footer,no_copyright" t-if="not no_footer" id="bottom" data-anchor="true" t-attf-class="bg-light o_footer">
+                <!--<footer t-cache="no_footer,no_copyright" t-if="not no_footer" id="bottom" data-anchor="true" t-attf-class="bg-light o_footer">-->
+                <footer t-cache="no_footer,no_copyright" t-if="bool(no_footer) == False" id="bottom" data-anchor="true" t-attf-class="bg-light o_footer">
                     <div id="footer"/>
-                    <div t-if="not no_copyright" class="o_footer_copyright">
+                    <!--<div t-if="not no_copyright" class="o_footer_copyright">-->
+                    <div t-if="bool(no_copyright) == False" class="o_footer_copyright">
                         <div class="container py-3">
                             <div class="row">
                                 <div class="col-sm text-center text-sm-start text-muted">
@@ -120,11 +129,14 @@
                 <div t-attf-class="card border-0 mx-auto bg-100 {{login_card_classes}} o_database_list" style="max-width: 300px;">
                     <div class="card-body">
                         <div class="text-center pb-3 border-bottom mb-4">
-                            <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" style="max-height:120px; max-width: 100%; width:auto"/>
+                            <!--<img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" style="max-height:120px; max-width: 100%; width:auto"/>-->
+                            <img t-attf-src="/web/binary/company_logo{{ str(bool(db)).replace('True', ''.join(['?dbname=', str(db)])).replace('False', '') }}" alt="Logo" style="max-height:120px; max-width: 100%; width:auto"/>
                         </div>
                         <t t-out="0"/>
-                        <div class="text-center small mt-4 pt-3 border-top" t-if="not disable_footer">
-                            <t t-if="not disable_database_manager">
+                        <!--<div class="text-center small mt-4 pt-3 border-top" t-if="not disable_footer">-->
+                        <div class="text-center small mt-4 pt-3 border-top" t-if="bool(disable_footer) == False">
+                            <!--<t t-if="not disable_database_manager">-->
+                            <t t-if="bool(disable_database_manager) == False">
                                 <a class="border-end pe-2 me-1" href="/web/database/manager">Manage Databases</a>
                             </t>
                             <a href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank">Powered by <span>Odoo</span></a>
@@ -137,12 +149,14 @@
 
     <template id="web.login" name="Login">
         <t t-call="web.login_layout">
-            <div class="oe_structure" id="oe_structure_login_top"/>
-            <owl-component t-if="not login" name="web.user_switch" />
-            <form t-attf-class="oe_login_form #{'' if login else 'd-none'}" role="form" t-attf-action="/web/login" method="post" onsubmit="this.action = '/web/login' + location.hash" data-captcha="login">
+            <!--<owl-component t-if="not login" name="web.user_switch" />-->
+            <owl-component t-if="bool(login) == False" name="web.user_switch" />
+            <!--<form t-attf-class="oe_login_form #{'' if login else 'd-none'}" role="form" t-attf-action="/web/login" method="post" onsubmit="this.action = '/web/login' + location.hash" data-captcha="login">-->
+            <form t-attf-class="oe_login_form #{str(bool(login)).replace('True', '').replace('False', 'd-none')}" role="form" t-attf-action="/web/login" method="post" onsubmit="this.action = '/web/login' + location.hash" data-captcha="login">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
-                <div class="mb-3" t-if="databases and len(databases) &gt; 1">
+                <!--<div class="mb-3" t-if="databases and len(databases) &gt; 1">-->
+                <div class="mb-3" t-if="bool(databases) &amp; len(databases) &gt; 1">
                     <label for="db" class="col-form-label">Database</label>
                     <div class="input-group">
                         <input type="text" name="db" t-att-value="request.db" id="db" class="form-control" required="required" readonly="readonly"/>
@@ -157,7 +171,8 @@
 
                 <div class="mb-3">
                     <label for="password" class="form-label d-flex justify-content-between">Password</label>
-                    <input type="password" placeholder="Password" name="password" id="password" class="form-control" required="required" autocomplete="current-password" t-att-autofocus="'autofocus' if login else None" maxlength="4096"/>
+                    <!--<input type="password" placeholder="Password" name="password" id="password" class="form-control" required="required" autocomplete="current-password" t-att-autofocus="'autofocus' if login else None" maxlength="4096"/>-->
+                    <input type="password" placeholder="Password" name="password" id="password" class="form-control" required="required" autocomplete="current-password" t-att-autofocus="str(bool(login)).replace('True', 'autofocus').replace('False', '')" maxlength="4096"/>
                 </div>
 
                 <p class="alert alert-danger" t-if="error" role="alert">
@@ -178,7 +193,6 @@
                 <input type="hidden" name="type" value="password"/>
                 <input type="hidden" name="redirect" t-att-value="redirect"/>
             </form>
-            <div class="oe_structure" id="oe_structure_login_bottom"/>
         </t>
     </template>
 
@@ -287,7 +301,8 @@
                 </t>
                 <t t-call="web.conditional_assets_tests" media="screen"/>
             </t>
-            <t t-set="head" t-value="head_web + (head or '')" media="screen"/>
+            <!--<t t-set="head" t-value="head_web + (head or '')" media="screen"/>-->
+            <t t-set="head" t-value="head_web" media="screen"/>
             <t t-set="body_classname" t-value="'o_web_client'"/>
         </t>
     </template>
